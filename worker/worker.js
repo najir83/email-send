@@ -1,6 +1,7 @@
 import { Worker } from "bullmq";
 import { configDotenv } from "dotenv";
 import nodemailer from "nodemailer";
+import express from "express";
 configDotenv();
 const connection = {
   url: process.env.REDIS_URL,
@@ -12,7 +13,7 @@ async function sendEmail({ to, subject, text }) {
     service: "gmail",
     auth: {
       user: process.env.EMAIL,
-      pass: process.env.EMAIL_APP_PASSWORD, 
+      pass: process.env.EMAIL_APP_PASSWORD,
     },
   });
 
@@ -37,3 +38,7 @@ new Worker(
 );
 
 console.log("👷 Worker started...");
+
+const app = express();
+app.get("/", (req, res) => res.send("Worker is running"));
+app.listen(process.env.PORT || 4000);
